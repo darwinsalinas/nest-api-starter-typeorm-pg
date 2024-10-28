@@ -1,9 +1,10 @@
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { User } from "src/auth/entities/user.entity";
+import { User } from "../src/auth/entities/user.entity";
 import * as request from 'supertest';
 import { Repository } from "typeorm";
 import { AppModule } from '../src/app.module';
+import { json } from "stream/consumers";
 
 
 describe('AuthController (e2e)', () => {
@@ -34,18 +35,25 @@ describe('AuthController (e2e)', () => {
         await repository.query(`DELETE FROM users;`);
     });
 
-    it('should not login with invalid credentials', () => {
-        return request(app.getHttpServer())
+    it('should not login with invalid credentials', async () => {
+        const response = await request(app.getHttpServer())
             .post('/auth/login')
             .send({
                 email: 'admin@gmail.com',
                 password: 'admin',
             })
-            .expect(400)
-            .expect('{"statusCode":400,"message":"Invalid credentials","error":"Bad Request"}');
+
+
+        expect(response.body).toEqual(expect.objectContaining({
+            statusCode: 400,
+            error: 'Bad Request',
+            message: 'Invalid credentials'
+        }))
+
+
     });
 
-    it('should login succesfully', async () => {
+    it('should login successfully', async () => {
         await request(app.getHttpServer())
             .post('/auth/register')
             .send({
