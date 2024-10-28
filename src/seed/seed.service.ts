@@ -31,11 +31,14 @@ export class SeedService {
     const users: User[] = [];
 
     seedUsers.forEach(user => {
-      users.push(this.userRepository.create(user))
+      // users.push(this.userRepository.create(user))
     });
 
-    const dbUsers = await this.userRepository.save(seedUsers)
+    // const dbUsers = await this.userRepository.save(seedUsers)
 
-    return dbUsers[0];
+    // return dbUsers[0];
+
+    return []
+
   }
 }
