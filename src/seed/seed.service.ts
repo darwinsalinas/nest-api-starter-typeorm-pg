@@ -47,9 +47,6 @@ export class SeedService {
 
       await this.permissionRepository.save(permission);
 
-      console.log({ permission });
-
-
       users.push(this.userRepository.create({
         ...user,
         roles: [role],
