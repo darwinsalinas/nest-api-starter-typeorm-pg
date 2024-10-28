@@ -4,6 +4,7 @@ interface SeedUser {
     fullName: string;
     password: string;
     roles: string[];
+    permissions: string[];
 }
 
 
@@ -15,28 +16,32 @@ interface SeedData {
 export const initialData: SeedData = {
     users: [
         {
-            email: 'user1@gmail.com',
+            email: 'admin@gmail.com',
             fullName: 'Admin User',
             password: hashPasswordSync('secret'),
-            roles: ['admin',]
+            roles: ['admin',],
+            permissions: ['all']
         },
         {
             email: 'cashier@gmail.com',
             fullName: 'Cashier User',
             password: hashPasswordSync('secret'),
-            roles: ['cashier',]
+            roles: ['cashier',],
+            permissions: ['create:invoice',]
         },
         {
             email: 'accountant@gmail.com',
             fullName: 'Accountant User',
             password: hashPasswordSync('secret'),
-            roles: ['accountant',]
+            roles: ['accountant',],
+            permissions: ['read:invoice',]
         },
         {
             email: 'sales@gmail.com',
             fullName: 'Sales User',
             password: hashPasswordSync('secret'),
-            roles: ['sales',]
+            roles: ['sales',],
+            permissions: ['update:invoice',]
         }
     ],
 }

@@ -40,10 +40,22 @@ export class SeedService {
     const users: User[] = [];
 
     for (const user of seedUsers) {
-      const role = await this.roleRepository.create({ role: user.roles[0] });
+      const role = this.roleRepository.create({ role: user.roles[0] });
       await this.roleRepository.save(role);
 
-      users.push(this.userRepository.create({ ...user, roles: [role] }));
+      const permission = this.permissionRepository.create({ permission: user.permissions[0] });
+
+      await this.permissionRepository.save(permission);
+
+      console.log({ permission });
+
+
+      users.push(this.userRepository.create({
+        ...user,
+        roles: [role],
+        directPermissions: [permission],
+        permissions: []
+      }));
     }
 
     const dbUsers = await this.userRepository.save(users)
