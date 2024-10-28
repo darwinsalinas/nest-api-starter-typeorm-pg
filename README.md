@@ -67,3 +67,23 @@ TypeOrmModule.forRoot({
   synchronize: true, // change to false to avoid
 }),
 ```
+
+## GraphQL
+
+This project uses GraphQL to provide a flexible and efficient way to interact with the API. Below are the details on how to execute GraphQL queries and mutations.
+
+### Resolvers
+
+At this moment, the project includes only one basic resolver to configure GraphQL. However, this setup can be easily extended to include additional resolvers as needed. Resolvers are responsible for handling the queries and mutations defined in your GraphQL schema, allowing you to interact with your data models.
+
+### Endpoint
+
+The GraphQL endpoint is available at:
+
+```
+http://{{host}}:{{port}}/graphql
+```
+
+You can use this endpoint to send your GraphQL queries and mutations.
+
+Replace `{{host}}` and `{{port}}` with the appropriate values for your environment.
