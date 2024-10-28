@@ -69,13 +69,8 @@ export class AuthService {
         isActive: true
       },
       select: ['id', 'email', 'password', 'roles', 'directPermissions',],
-      relations: ['roles', 'directPermissions']
+      relations: ['roles.permissions', 'directPermissions']
     });
-
-    dbUser.permissions = [...dbUser.directPermissions];
-
-    delete dbUser.directPermissions
-
 
     return {
       ...dbUser,
