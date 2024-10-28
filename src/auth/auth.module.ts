@@ -9,10 +9,11 @@ import { AuthService } from './auth.service';
 import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
+import { AuthResolver } from './auth.resolver';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, AuthResolver,],
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User, Role, Permission]),
