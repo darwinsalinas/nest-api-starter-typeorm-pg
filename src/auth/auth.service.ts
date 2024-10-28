@@ -41,9 +41,9 @@ export class AuthService {
         email: loginUserDto.email,
         isActive: true
       },
-      select: ['id', 'email', 'password']
+      select: ['id', 'email', 'password', 'roles', 'directPermissions',],
+      relations: ['roles.permissions', 'directPermissions']
     });
-
 
     if (!user) {
       throw new BadRequestException('Invalid credentials');
@@ -57,14 +57,28 @@ export class AuthService {
 
 
     return {
-      email: user.email,
+      ...user,
       token: this.getJwtToken({ id: user.id })
     };
   }
 
-  me(user: User) {
+  async me(user: User) {
+    const dbUser = await this.userRepository.findOne({
+      where: {
+        email: user.email,
+        isActive: true
+      },
+      select: ['id', 'email', 'password', 'roles', 'directPermissions',],
+      relations: ['roles', 'directPermissions']
+    });
+
+    dbUser.permissions = [...dbUser.directPermissions];
+
+    delete dbUser.directPermissions
+
+
     return {
-      ...user,
+      ...dbUser,
       token: this.getJwtToken({ id: user.id })
     };
   }

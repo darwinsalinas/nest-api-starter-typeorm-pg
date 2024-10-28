@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, VirtualColumn, AfterLoad } from 'typeorm';
 import { JoinTable, ManyToMany } from 'typeorm';
 import { Role } from './role.entity';
 import { Permission } from './permission.entity';
@@ -52,7 +52,6 @@ export class User {
     })
     directPermissions: Permission[];
 
-
     permissions: Permission[];
 
 
@@ -64,6 +63,17 @@ export class User {
     @BeforeUpdate()
     normalizeUpdateEmail() {
         this.normalizeInsertEmail();
+    }
+
+    @AfterLoad()
+    setPermissions() {
+        const rolesPermissions = this.roles.map(role => {
+            const permissions = [...role.permissions]
+            delete role.permissions;
+            return permissions;
+        }).flat();
+        this.permissions = [...this.directPermissions, ...rolesPermissions];
+        delete this.directPermissions;
     }
 }
 
