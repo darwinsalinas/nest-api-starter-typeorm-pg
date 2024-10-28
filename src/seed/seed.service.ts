@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User } from '../auth/entities/user.entity';
+import { User, Role, Permission } from '../auth/entities';
 import { initialData } from './data/seed-data';
+
 
 @Injectable()
 export class SeedService {
@@ -11,6 +12,12 @@ export class SeedService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
+
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
   ) { }
 
   async executeSeed() {
@@ -22,6 +29,8 @@ export class SeedService {
 
   private async deleteTables() {
     await this.userRepository.delete({});
+    await this.roleRepository.delete({});
+    await this.permissionRepository.delete({});
   }
 
   private async insertUsers() {
@@ -30,15 +39,15 @@ export class SeedService {
 
     const users: User[] = [];
 
-    seedUsers.forEach(user => {
-      // users.push(this.userRepository.create(user))
-    });
+    for (const user of seedUsers) {
+      const role = await this.roleRepository.create({ role: user.roles[0] });
+      await this.roleRepository.save(role);
 
-    // const dbUsers = await this.userRepository.save(seedUsers)
+      users.push(this.userRepository.create({ ...user, roles: [role] }));
+    }
 
-    // return dbUsers[0];
+    const dbUsers = await this.userRepository.save(users)
 
-    return []
-
+    return dbUsers[0];
   }
 }

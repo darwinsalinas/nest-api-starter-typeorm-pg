@@ -16,15 +16,27 @@ export const initialData: SeedData = {
     users: [
         {
             email: 'user1@gmail.com',
-            fullName: 'Test One',
+            fullName: 'Admin User',
             password: hashPasswordSync('secret'),
-            roles: ['admin']
+            roles: ['admin',]
         },
         {
-            email: 'user2@gmail.com',
-            fullName: 'Test Two',
+            email: 'cashier@gmail.com',
+            fullName: 'Cashier User',
             password: hashPasswordSync('secret'),
-            roles: ['user',]
+            roles: ['cashier',]
+        },
+        {
+            email: 'accountant@gmail.com',
+            fullName: 'Accountant User',
+            password: hashPasswordSync('secret'),
+            roles: ['accountant',]
+        },
+        {
+            email: 'sales@gmail.com',
+            fullName: 'Sales User',
+            password: hashPasswordSync('secret'),
+            roles: ['sales',]
         }
     ],
 }
