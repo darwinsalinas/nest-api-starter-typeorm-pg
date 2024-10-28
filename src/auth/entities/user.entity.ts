@@ -52,7 +52,8 @@ export class User {
     })
     directPermissions: Permission[];
 
-    permission: Permission[];
+
+    permissions: Permission[];
 
 
     @BeforeInsert()
