@@ -67,12 +67,23 @@ export class User {
 
     @AfterLoad()
     setPermissions() {
-        const rolesPermissions = this.roles.map(role => {
-            const permissions = [...role.permissions]
-            delete role.permissions;
-            return permissions;
-        }).flat();
-        this.permissions = [...this.directPermissions, ...rolesPermissions];
+        let rolesPermissions = [];
+        let directPermissions = [];
+        if (this.roles) {
+            rolesPermissions = this.roles.map(role => {
+                const permissions = [...role.permissions]
+                delete role.permissions;
+                return permissions;
+            }).flat();
+        }
+
+        if (this.directPermissions) {
+            directPermissions = this.directPermissions;
+        }
+
+
+        this.permissions = [...directPermissions, ...rolesPermissions];
+
         delete this.directPermissions;
     }
 }
