@@ -7,13 +7,12 @@ import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   register(@Body() registerUserDto: RegisterUserDto) {
     return this.authService.register(registerUserDto);
   }
-
 
   @Post('login')
   @HttpCode(200)
@@ -26,5 +25,4 @@ export class AuthController {
   me(@GetUser() user: User) {
     return this.authService.me(user);
   }
-
 }

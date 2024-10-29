@@ -1,9 +1,9 @@
-import slugify from "slugify"
+import slugify from 'slugify';
 
 export const generateSlug = (text: string) => {
-    return slugify(text, {
-        lower: true,
-        trim: true,
-        strict: true
-    });
-}
+  return slugify(text, {
+    lower: true,
+    trim: true,
+    strict: true,
+  });
+};

@@ -14,21 +14,24 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(registerUserDto: RegisterUserDto) {
     const { password } = registerUserDto;
 
     const hash = await hashPassword(password);
 
-    const user = this.userRepository.create({ ...registerUserDto, password: hash });
+    const user = this.userRepository.create({
+      ...registerUserDto,
+      password: hash,
+    });
 
     try {
       await this.userRepository.save(user);
       return {
         ...user,
-        token: this.getJwtToken({ id: user.id })
+        token: this.getJwtToken({ id: user.id }),
       };
     } catch (error) {
       handleError(error);
@@ -39,26 +42,28 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: {
         email: loginUserDto.email,
-        isActive: true
+        isActive: true,
       },
-      select: ['id', 'email', 'password', 'roles', 'directPermissions',],
-      relations: ['roles.permissions', 'directPermissions']
+      select: ['id', 'email', 'password', 'roles', 'directPermissions'],
+      relations: ['roles.permissions', 'directPermissions'],
     });
 
     if (!user) {
       throw new BadRequestException('Invalid credentials');
     }
 
-    const isPasswordValid = await validatePassword(loginUserDto.password, user.password);
+    const isPasswordValid = await validatePassword(
+      loginUserDto.password,
+      user.password,
+    );
 
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid credentials');
     }
 
-
     return {
       ...user,
-      token: this.getJwtToken({ id: user.id })
+      token: this.getJwtToken({ id: user.id }),
     };
   }
 
@@ -66,15 +71,15 @@ export class AuthService {
     const dbUser = await this.userRepository.findOne({
       where: {
         email: user.email,
-        isActive: true
+        isActive: true,
       },
-      select: ['id', 'email', 'password', 'roles', 'directPermissions',],
-      relations: ['roles.permissions', 'directPermissions']
+      select: ['id', 'email', 'password', 'roles', 'directPermissions'],
+      relations: ['roles.permissions', 'directPermissions'],
     });
 
     return {
       ...dbUser,
-      token: this.getJwtToken({ id: user.id })
+      token: this.getJwtToken({ id: user.id }),
     };
   }
 

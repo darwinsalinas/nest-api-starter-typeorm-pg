@@ -1,3 +1,3 @@
 export abstract class HttpAdapter {
-    abstract get<T = any>(url: string): Promise<T>
+  abstract get<T = any>(url: string): Promise<T>;
 }

@@ -1,138 +1,131 @@
-import { INestApplication, ValidationPipe } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-import { User } from "../src/auth/entities/user.entity";
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { User } from '../src/auth/entities/user.entity';
 import * as request from 'supertest';
-import { Repository } from "typeorm";
+import { Repository } from 'typeorm';
 import { AppModule } from '../src/app.module';
-import { json } from "stream/consumers";
-
 
 describe('AuthController (e2e)', () => {
+  let app: INestApplication;
 
-    let app: INestApplication;
+  let repository: Repository<User>;
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
+    app = moduleFixture.createNestApplication();
 
-    let repository: Repository<User>;
-    beforeEach(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
 
-        app = moduleFixture.createNestApplication();
+    await app.init();
+    repository = moduleFixture.get('UserRepository');
+  });
 
-        app.useGlobalPipes(new ValidationPipe(
-            {
-                whitelist: true,
-                forbidNonWhitelisted: true,
-            }
-        ));
+  afterEach(async () => {
+    await repository.query(`DELETE FROM users;`);
+  });
 
-        await app.init();
-        repository = moduleFixture.get('UserRepository');
-    });
+  it('should not login with invalid credentials', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'admin@gmail.com',
+        password: 'admin',
+      });
 
-    afterEach(async () => {
-        await repository.query(`DELETE FROM users;`);
-    });
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Invalid credentials',
+      }),
+    );
+  });
 
-    it('should not login with invalid credentials', async () => {
-        const response = await request(app.getHttpServer())
-            .post('/auth/login')
-            .send({
-                email: 'admin@gmail.com',
-                password: 'admin',
-            })
+  it('should login successfully', async () => {
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({
+        email: 'new-user@gmail.com',
+        password: 'N3wUser@#.',
+        fullName: 'New User',
+      })
+      .expect(201);
 
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'new-user@gmail.com',
+        password: 'N3wUser@#.',
+      })
+      .expect(200);
+  });
 
-        expect(response.body).toEqual(expect.objectContaining({
-            statusCode: 400,
-            error: 'Bad Request',
-            message: 'Invalid credentials'
-        }))
+  it('should register a new user successfully', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({
+        email: 'new-user@gmail.com',
+        password: 'N3wUser@#.',
+        fullName: 'New User',
+      })
+      .expect(201);
 
+    const responseUser = response.body;
 
-    });
+    expect(responseUser).toHaveProperty('id');
+    return;
+  });
 
-    it('should login successfully', async () => {
-        await request(app.getHttpServer())
-            .post('/auth/register')
-            .send({
-                email: 'new-user@gmail.com',
-                password: 'N3wUser@#.',
-                fullName: 'New User',
-            })
-            .expect(201);
+  it('should NOT register a user with a weak password', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({
+        email: 'test@gmail.com',
+        password: '12345',
+        fullName: 'New User',
+      })
+      .expect(400);
 
-        return request(app.getHttpServer())
-            .post('/auth/login')
-            .send({
-                email: 'new-user@gmail.com',
-                password: 'N3wUser@#.'
-            })
-            .expect(200);
-    });
+    const responseUser = response.body;
 
-    it('should register a new user successfully', async () => {
-        const response = await request(app.getHttpServer())
-            .post('/auth/register')
-            .send({
-                email: 'new-user@gmail.com',
-                password: 'N3wUser@#.',
-                fullName: 'New User',
-            })
-            .expect(201);
+    const bodyResponse = {
+      statusCode: 400,
+      message: [
+        'Password must have at least 8 characters, 1 lowercase, 1 uppercase, 1 number and 1 symbol',
+      ],
+      error: 'Bad Request',
+    };
 
-        const responseUser = response.body;
+    expect(responseUser).toEqual(bodyResponse);
+    return;
+  });
 
-        expect(responseUser).toHaveProperty('id');
-        return;
-    });
+  it('should NOT register a user with a invalid email', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({
+        email: 'test',
+        password: 'N3wUser@#.',
+        fullName: 'New User',
+      })
+      .expect(400);
 
+    const responseUser = response.body;
 
-    it('should NOT register a user with a weak password', async () => {
-        const response = await request(app.getHttpServer())
-            .post('/auth/register')
-            .send({
-                email: 'test@gmail.com',
-                password: '12345',
-                fullName: 'New User',
-            }).expect(400);
+    const bodyResponse = {
+      statusCode: 400,
+      message: ['email must be an email'],
+      error: 'Bad Request',
+    };
 
-        const responseUser = response.body;
-
-        const bodyResponse = {
-            "statusCode": 400,
-            "message": [
-                "Password must have at least 8 characters, 1 lowercase, 1 uppercase, 1 number and 1 symbol"
-            ],
-            "error": "Bad Request"
-        }
-
-        expect(responseUser).toEqual(bodyResponse);
-        return;
-    });
-
-    it('should NOT register a user with a invalid email', async () => {
-        const response = await request(app.getHttpServer())
-            .post('/auth/register')
-            .send({
-                email: 'test',
-                password: 'N3wUser@#.',
-                fullName: 'New User',
-            }).expect(400);
-
-        const responseUser = response.body;
-
-        const bodyResponse = {
-            "statusCode": 400,
-            "message": [
-                "email must be an email"
-            ],
-            "error": "Bad Request"
-        }
-
-        expect(responseUser).toEqual(bodyResponse);
-        return;
-    });
-
+    expect(responseUser).toEqual(bodyResponse);
+    return;
+  });
 });

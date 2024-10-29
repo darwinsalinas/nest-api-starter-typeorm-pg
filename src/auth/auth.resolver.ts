@@ -1,11 +1,9 @@
-import { Query, Resolver } from "@nestjs/graphql";
-
+import { Query, Resolver } from '@nestjs/graphql';
 
 @Resolver()
 export class AuthResolver {
-
-    @Query(() => String)
-    authState(): string {
-        return 'Authenticated???';
-    }
+  @Query(() => String)
+  authState(): string {
+    return 'Authenticated???';
+  }
 }

@@ -5,10 +5,8 @@ import { Repository } from 'typeorm';
 import { User, Role, Permission } from '../auth/entities';
 import { initialData } from './data/seed-data';
 
-
 @Injectable()
 export class SeedService {
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -18,7 +16,7 @@ export class SeedService {
 
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
-  ) { }
+  ) {}
 
   async executeSeed() {
     await this.deleteTables();
@@ -34,7 +32,6 @@ export class SeedService {
   }
 
   private async insertUsers() {
-
     const seedUsers = initialData.users;
 
     const users: User[] = [];
@@ -43,19 +40,23 @@ export class SeedService {
       const role = this.roleRepository.create({ role: user.roles[0] });
       await this.roleRepository.save(role);
 
-      const permission = this.permissionRepository.create({ permission: user.permissions[0] });
+      const permission = this.permissionRepository.create({
+        permission: user.permissions[0],
+      });
 
       await this.permissionRepository.save(permission);
 
-      users.push(this.userRepository.create({
-        ...user,
-        roles: [role],
-        directPermissions: [permission],
-        permissions: []
-      }));
+      users.push(
+        this.userRepository.create({
+          ...user,
+          roles: [role],
+          directPermissions: [permission],
+          permissions: [],
+        }),
+      );
     }
 
-    const dbUsers = await this.userRepository.save(users)
+    const dbUsers = await this.userRepository.save(users);
 
     return dbUsers[0];
   }

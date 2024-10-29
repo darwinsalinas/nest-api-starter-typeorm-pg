@@ -40,4 +40,4 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
   controllers: [AppController],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

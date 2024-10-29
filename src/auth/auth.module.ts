@@ -13,7 +13,7 @@ import { AuthResolver } from './auth.resolver';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, AuthResolver,],
+  providers: [AuthService, JwtStrategy, AuthResolver],
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User, Role, Permission]),
@@ -23,15 +23,10 @@ import { AuthResolver } from './auth.resolver';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN') || '1d' }
+        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN') || '1d' },
       }),
-    })
+    }),
   ],
-  exports: [
-    TypeOrmModule,
-    JwtStrategy,
-    PassportModule,
-    JwtModule,
-  ]
+  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })
-export class AuthModule { }
+export class AuthModule {}
