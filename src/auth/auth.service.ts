@@ -73,7 +73,14 @@ export class AuthService {
         email: user.email,
         isActive: true,
       },
-      select: ['id', 'email', 'password', 'roles', 'directPermissions'],
+      select: [
+        'id',
+        'email',
+        'password',
+        'roles',
+        'directPermissions',
+        'fullName',
+      ],
       relations: ['roles.permissions', 'directPermissions'],
     });
 
