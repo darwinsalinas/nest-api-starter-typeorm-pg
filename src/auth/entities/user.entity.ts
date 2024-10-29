@@ -9,19 +9,24 @@ import {
 import { JoinTable, ManyToMany } from 'typeorm';
 import { Role } from './role.entity';
 import { Permission } from './permission.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity({ name: 'users' })
+@ObjectType()
 export class User {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String)
   id: string;
 
   @Column({ unique: true, type: 'text' })
+  @Field(() => String)
   email: string;
 
   @Column({ type: 'text', select: false })
   password: string;
 
   @Column({ type: 'text' })
+  @Field(() => String)
   fullName: string;
 
   @Column({ type: 'boolean', default: true })
