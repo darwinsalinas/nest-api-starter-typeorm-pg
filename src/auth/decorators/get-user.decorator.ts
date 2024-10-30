@@ -3,10 +3,17 @@ import {
   ExecutionContext,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { User } from '../entities';
 
 export const GetUser = createParamDecorator((data, ctx: ExecutionContext) => {
-  const req = ctx.switchToHttp().getRequest();
-  const user = req.user;
+  let user: User;
+
+  if (ctx.getType() === 'http') {
+    user = ctx.switchToHttp().getRequest().user;
+  } else {
+    user = GqlExecutionContext.create(ctx).getContext().req.user;
+  }
 
   if (!user) {
     throw new InternalServerErrorException(

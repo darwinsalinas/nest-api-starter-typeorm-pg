@@ -29,6 +29,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
       autoSchemaFile: true,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      context: ({ req, res }) => ({ req, res }),
     }),
 
     CommonModule,
