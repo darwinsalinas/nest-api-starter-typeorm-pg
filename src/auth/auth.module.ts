@@ -10,10 +10,18 @@ import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
 import { AuthResolver } from './auth.resolver';
+import { RolesResolver } from './roles.resolver';
+import { RolesService } from './roles.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, AuthResolver],
+  providers: [
+    AuthService,
+    RolesService,
+    JwtStrategy,
+    AuthResolver,
+    RolesResolver,
+  ],
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User, Role, Permission]),
