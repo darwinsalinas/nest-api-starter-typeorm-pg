@@ -9,6 +9,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { PrinterModule } from './printer/printer.module';
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -40,6 +41,8 @@ import { PrinterModule } from './printer/printer.module';
     AuthModule,
 
     PrinterModule,
+
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [],
