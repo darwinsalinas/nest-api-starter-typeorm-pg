@@ -4,7 +4,7 @@ classDiagram
         +String id
         +String email
         +String password
-        +String fullName
+        +String name
         +Boolean isActive
         +Role[] roles
         +Permission[] directPermissions

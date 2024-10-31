@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
+
 import { RegisterUserDto } from './dto/register-user.dto';
 import { User } from './entities/user.entity';
-
 import { LoginUserDto } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { validatePassword, hashPassword, handleError } from '../common/helpers';
-import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { PrinterService } from 'src/printer/printer.service';
-import { Company } from 'src/companies/entities/company.entity';
+import { PrinterService } from '../printer/printer.service';
+import { Company } from '../companies/entities/company.entity';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +34,7 @@ export class AuthService {
     });
 
     const company = this.companyRepository.create({
-      name: `${registerDTO.fullName} Company`,
+      name: `${registerDTO.name} Company`,
       ruc: '123456789',
     });
 
@@ -52,7 +52,7 @@ export class AuthService {
 
       return {
         ...user,
-        token: this.getJwtToken({ id: user.id }),
+        accessToken: this.getJwtToken({ id: user.id }),
       };
     } catch (error) {
       handleError(error);
@@ -65,14 +65,7 @@ export class AuthService {
         email: loginUserDto.email,
         isActive: true,
       },
-      select: [
-        'id',
-        'email',
-        'fullName',
-        'password',
-        'roles',
-        'directPermissions',
-      ],
+      select: ['id', 'email', 'name', 'password', 'roles', 'directPermissions'],
       relations: ['roles.permissions', 'directPermissions'],
     });
 
@@ -93,7 +86,7 @@ export class AuthService {
 
     return {
       ...user,
-      token: this.getJwtToken({ id: user.id }),
+      accessToken: this.getJwtToken({ id: user.id }),
     };
   }
 
@@ -103,14 +96,7 @@ export class AuthService {
         email: user.email,
         isActive: true,
       },
-      select: [
-        'id',
-        'email',
-        'password',
-        'roles',
-        'directPermissions',
-        'fullName',
-      ],
+      select: ['id', 'email', 'password', 'roles', 'directPermissions', 'name'],
       relations: ['roles.permissions', 'directPermissions'],
     });
 
@@ -118,14 +104,14 @@ export class AuthService {
 
     return {
       ...dbUser,
-      token: this.getJwtToken({ id: user.id }),
+      accessToken: this.getJwtToken({ id: user.id }),
     };
   }
 
   getJwtToken(payload: JwtPayload) {
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
-    return token;
+    return accessToken;
   }
 
   mePdf(user: User) {

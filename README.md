@@ -33,7 +33,7 @@ This project creates and manages the following tables:
 3. **Users**
 
    - Stores information about users in the system.
-   - Example fields: `id`, `fullName`, `email`, `password`, `isActive`
+   - Example fields: `id`, `name`, `email`, `password`, `isActive`
 
 4. **User Roles**
 

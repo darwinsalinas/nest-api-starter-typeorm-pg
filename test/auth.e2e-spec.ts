@@ -54,7 +54,7 @@ describe('AuthController (e2e)', () => {
       .send({
         email: 'new-user@gmail.com',
         password: 'N3wUser@#.',
-        fullName: 'New User',
+        name: 'New User',
       })
       .expect(201);
 
@@ -73,7 +73,7 @@ describe('AuthController (e2e)', () => {
       .send({
         email: 'new-user@gmail.com',
         password: 'N3wUser@#.',
-        fullName: 'New User',
+        name: 'New User',
       })
       .expect(201);
 
@@ -89,7 +89,7 @@ describe('AuthController (e2e)', () => {
       .send({
         email: 'test@gmail.com',
         password: '12345',
-        fullName: 'New User',
+        name: 'New User',
       })
       .expect(400);
 
@@ -113,7 +113,7 @@ describe('AuthController (e2e)', () => {
       .send({
         email: 'test',
         password: 'N3wUser@#.',
-        fullName: 'New User',
+        name: 'New User',
       })
       .expect(400);
 

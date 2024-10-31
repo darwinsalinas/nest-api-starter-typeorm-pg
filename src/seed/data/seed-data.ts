@@ -1,7 +1,7 @@
 import { hashPasswordSync } from '../../common/helpers/hash-password.helper';
 interface SeedUser {
   email: string;
-  fullName: string;
+  name: string;
   password: string;
   roles: string[];
   permissions: string[];
@@ -15,28 +15,28 @@ export const initialData: SeedData = {
   users: [
     {
       email: 'admin@gmail.com',
-      fullName: 'Admin User',
+      name: 'Admin User',
       password: hashPasswordSync('secret'),
       roles: ['admin'],
       permissions: ['all'],
     },
     {
       email: 'cashier@gmail.com',
-      fullName: 'Cashier User',
+      name: 'Cashier User',
       password: hashPasswordSync('secret'),
       roles: ['cashier'],
       permissions: ['create:invoice'],
     },
     {
       email: 'accountant@gmail.com',
-      fullName: 'Accountant User',
+      name: 'Accountant User',
       password: hashPasswordSync('secret'),
       roles: ['accountant'],
       permissions: ['read:invoice'],
     },
     {
       email: 'sales@gmail.com',
-      fullName: 'Sales User',
+      name: 'Sales User',
       password: hashPasswordSync('secret'),
       roles: ['sales'],
       permissions: ['update:invoice'],

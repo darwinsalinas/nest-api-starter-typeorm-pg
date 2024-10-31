@@ -12,8 +12,8 @@ import { Permission } from './entities/permission.entity';
 import { AuthResolver } from './auth.resolver';
 import { RolesResolver } from './roles.resolver';
 import { RolesService } from './roles.service';
-import { PrinterModule } from 'src/printer/printer.module';
-import { CompaniesModule } from 'src/companies/companies.module';
+import { PrinterModule } from '../printer/printer.module';
+import { CompaniesModule } from '../companies/companies.module';
 
 @Module({
   controllers: [AuthController],
