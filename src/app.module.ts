@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { PrinterModule } from './printer/printer.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
     SeedModule,
 
     AuthModule,
+
+    PrinterModule,
   ],
   controllers: [AppController],
   providers: [],
