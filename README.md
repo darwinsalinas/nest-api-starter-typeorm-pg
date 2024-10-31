@@ -49,6 +49,8 @@ This project creates and manages the following tables:
    - A join table that associates users with permissions directly.
    - Example fields: `user_id`, `permission_id`.
 
+You can see the diagram [here](./src/docs/database.md)
+
 ## Database Synchronization
 
 This project is currently set up to ~synchronize~ the models with the ~tables~ in the database using TypeORM. The configuration for this synchronization is done in the `app.module.ts` file as follows:
