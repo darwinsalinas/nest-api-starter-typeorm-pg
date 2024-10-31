@@ -12,6 +12,7 @@ import { Permission } from './entities/permission.entity';
 import { AuthResolver } from './auth.resolver';
 import { RolesResolver } from './roles.resolver';
 import { RolesService } from './roles.service';
+import { PrinterModule } from 'src/printer/printer.module';
 
 @Module({
   controllers: [AuthController],
@@ -34,6 +35,7 @@ import { RolesService } from './roles.service';
         signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN') || '1d' },
       }),
     }),
+    PrinterModule,
   ],
   exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })

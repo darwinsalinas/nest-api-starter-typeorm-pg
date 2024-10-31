@@ -8,6 +8,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { validatePassword, hashPassword, handleError } from '../common/helpers';
+import { TDocumentDefinitions } from 'pdfmake/interfaces';
+import { PrinterService } from 'src/printer/printer.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly printerService: PrinterService,
   ) {}
 
   async register(registerUserDto: RegisterUserDto) {
@@ -94,5 +97,15 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return token;
+  }
+
+  mePdf(user: User) {
+    const docDefinition: TDocumentDefinitions = {
+      content: [`Hello ${user.email}`],
+    };
+
+    const doc = this.printerService.createPdf(docDefinition);
+
+    return doc;
   }
 }
