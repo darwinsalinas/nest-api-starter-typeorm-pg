@@ -1,12 +1,13 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../src/auth/entities/user.entity';
-import * as request from 'supertest';
+import * as supertest from 'supertest';
 import { Repository } from 'typeorm';
 import { AppModule } from '../src/app.module';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
+  let request: ReturnType<typeof supertest.default>;
 
   let repository: Repository<User>;
   beforeEach(async () => {
@@ -25,6 +26,7 @@ describe('AuthController (e2e)', () => {
 
     await app.init();
     repository = moduleFixture.get('UserRepository');
+    request = supertest.default(app.getHttpServer());
   });
 
   afterEach(async () => {
@@ -32,12 +34,10 @@ describe('AuthController (e2e)', () => {
   });
 
   it('should not login with invalid credentials', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({
-        email: 'admin@gmail.com',
-        password: 'admin',
-      });
+    const response = await request.post('/auth/login').send({
+      email: 'admin@gmail.com',
+      password: 'admin',
+    });
 
     expect(response.body).toEqual(
       expect.objectContaining({
@@ -49,7 +49,7 @@ describe('AuthController (e2e)', () => {
   });
 
   it('should login successfully', async () => {
-    await request(app.getHttpServer())
+    await request
       .post('/auth/register')
       .send({
         email: 'new-user@gmail.com',
@@ -58,7 +58,7 @@ describe('AuthController (e2e)', () => {
       })
       .expect(201);
 
-    return request(app.getHttpServer())
+    return request
       .post('/auth/login')
       .send({
         email: 'new-user@gmail.com',
@@ -68,7 +68,7 @@ describe('AuthController (e2e)', () => {
   });
 
   it('should register a new user successfully', async () => {
-    const response = await request(app.getHttpServer())
+    const response = await request
       .post('/auth/register')
       .send({
         email: 'new-user@gmail.com',
@@ -84,7 +84,7 @@ describe('AuthController (e2e)', () => {
   });
 
   it('should NOT register a user with a weak password', async () => {
-    const response = await request(app.getHttpServer())
+    const response = await request
       .post('/auth/register')
       .send({
         email: 'test@gmail.com',
@@ -108,7 +108,7 @@ describe('AuthController (e2e)', () => {
   });
 
   it('should NOT register a user with a invalid email', async () => {
-    const response = await request(app.getHttpServer())
+    const response = await request
       .post('/auth/register')
       .send({
         email: 'test',
