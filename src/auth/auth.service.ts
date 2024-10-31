@@ -10,28 +10,46 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { validatePassword, hashPassword, handleError } from '../common/helpers';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { PrinterService } from 'src/printer/printer.service';
+import { Company } from 'src/companies/entities/company.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Company)
+    private readonly companyRepository: Repository<Company>,
     private readonly jwtService: JwtService,
     private readonly printerService: PrinterService,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto) {
-    const { password } = registerUserDto;
+  async register(registerDTO: RegisterUserDto) {
+    const { password } = registerDTO;
 
     const hash = await hashPassword(password);
 
     const user = this.userRepository.create({
-      ...registerUserDto,
+      ...registerDTO,
       password: hash,
     });
 
+    const company = this.companyRepository.create({
+      name: `${registerDTO.fullName} Company`,
+      ruc: '123456789',
+    });
+
     try {
-      await this.userRepository.save(user);
+      await this.userRepository.manager.transaction(
+        async (transactionalEntityManager) => {
+          await transactionalEntityManager.save(company);
+          user.company = company;
+          await transactionalEntityManager.save(user);
+        },
+      );
+
+      delete user.password;
+      delete user.company;
+
       return {
         ...user,
         token: this.getJwtToken({ id: user.id }),

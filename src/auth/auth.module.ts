@@ -13,6 +13,7 @@ import { AuthResolver } from './auth.resolver';
 import { RolesResolver } from './roles.resolver';
 import { RolesService } from './roles.service';
 import { PrinterModule } from 'src/printer/printer.module';
+import { CompaniesModule } from 'src/companies/companies.module';
 
 @Module({
   controllers: [AuthController],
@@ -36,6 +37,7 @@ import { PrinterModule } from 'src/printer/printer.module';
       }),
     }),
     PrinterModule,
+    CompaniesModule,
   ],
   exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })

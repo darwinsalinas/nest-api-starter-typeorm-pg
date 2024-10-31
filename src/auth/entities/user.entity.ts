@@ -5,11 +5,13 @@ import {
   BeforeInsert,
   BeforeUpdate,
   AfterLoad,
+  ManyToOne,
 } from 'typeorm';
 import { JoinTable, ManyToMany } from 'typeorm';
 import { Role } from './role.entity';
 import { Permission } from './permission.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Company } from 'src/companies/entities/company.entity';
 
 @Entity({ name: 'users' })
 @ObjectType()
@@ -31,6 +33,10 @@ export class User {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @ManyToOne(() => Company, (company) => company.users)
+  @Field(() => Company)
+  company: Company;
 
   @ManyToMany(() => Role, (role) => role.role)
   @JoinTable({
