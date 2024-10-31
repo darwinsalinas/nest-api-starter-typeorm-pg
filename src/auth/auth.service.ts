@@ -47,7 +47,14 @@ export class AuthService {
         email: loginUserDto.email,
         isActive: true,
       },
-      select: ['id', 'email', 'password', 'roles', 'directPermissions'],
+      select: [
+        'id',
+        'email',
+        'fullName',
+        'password',
+        'roles',
+        'directPermissions',
+      ],
       relations: ['roles.permissions', 'directPermissions'],
     });
 
@@ -63,6 +70,8 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid credentials');
     }
+
+    delete user.password;
 
     return {
       ...user,
@@ -86,6 +95,8 @@ export class AuthService {
       ],
       relations: ['roles.permissions', 'directPermissions'],
     });
+
+    delete dbUser.password;
 
     return {
       ...dbUser,
