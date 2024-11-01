@@ -117,3 +117,9 @@ Create a new migration for update tables:
 npm run migration:create --name=update_table_example_add_creation_date_field
 ```
 
+
+### To run the migrations correctly, you must follow these steps:
+
+1. Add to the `.env` file the `SYNC_DB=false` variable
+2. npm run dev
+3. npm run migration:run
