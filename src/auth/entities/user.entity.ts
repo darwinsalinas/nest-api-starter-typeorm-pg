@@ -6,6 +6,7 @@ import {
   BeforeUpdate,
   AfterLoad,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { JoinTable, ManyToMany } from 'typeorm';
 import { Role } from './role.entity';
@@ -31,10 +32,11 @@ export class User {
   @Field(() => String)
   name: string;
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ type: 'boolean', default: true, name: 'is_active' })
   isActive: boolean;
 
   @ManyToOne(() => Company, (company) => company.users)
+  @JoinColumn({ name: 'company_id' })
   @Field(() => Company)
   company: Company;
 
