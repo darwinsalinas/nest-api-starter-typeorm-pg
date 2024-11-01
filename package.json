@@ -4,7 +4,7 @@
   "description": "",
   "author": "Darwin Salinas <salinash2000@gmail.com>",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "private": true,
   "license": "MIT",
