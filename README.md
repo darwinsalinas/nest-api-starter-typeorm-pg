@@ -89,3 +89,31 @@ http://{{host}}:{{port}}/graphql
 You can use this endpoint to send your GraphQL queries and mutations.
 
 Replace `{{host}}` and `{{port}}` with the appropriate values for your environment.
+
+
+
+## Migrations
+
+Run migrations:
+```cmd
+npm run migration:run
+```
+
+
+Revert latest migration:
+```cmd
+npm run migration:revert
+```
+
+
+Create a new migration for new tables:
+```cmd
+npm run migration:create --name=create_table_example
+```
+
+
+Create a new migration for update tables:
+```cmd
+npm run migration:create --name=update_table_example_add_creation_date_field
+```
+
