@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { User, Role, Permission } from '../auth/entities';
 import { initialData } from './data/seed-data';
+import { Company } from '../companies/entities/company.entity';
 
 @Injectable()
 export class SeedService {
@@ -16,6 +17,9 @@ export class SeedService {
 
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
+
+    @InjectRepository(Company)
+    private readonly companyRepository: Repository<Company>,
   ) {}
 
   async executeSeed() {
@@ -29,10 +33,17 @@ export class SeedService {
     await this.userRepository.delete({});
     await this.roleRepository.delete({});
     await this.permissionRepository.delete({});
+    await this.companyRepository.delete({});
   }
 
   private async insertUsers() {
     const seedUsers = initialData.users;
+    const company = this.companyRepository.create({
+      name: 'Company',
+      ruc: '123456789',
+    });
+
+    await this.companyRepository.save(company);
 
     const users: User[] = [];
 
@@ -51,6 +62,7 @@ export class SeedService {
           ...user,
           roles: [role],
           directPermissions: [permission],
+          company,
           permissions: [],
         }),
       );
